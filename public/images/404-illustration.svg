@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 800 600" fill="none">
+  <path d="M626.08 312.428C598.152 243.78 518.796 254.125 503.344 183.521C487.891 112.918 408.536 102.573 380.608 171.22C352.679 239.868 377.873 421.718 432.743 458.466C487.613 495.214 654.008 381.076 626.08 312.428Z" fill="#14B8A6" opacity="0.1"/>
+  <path d="M626.08 312.428C598.152 243.78 518.796 254.125 503.344 183.521C487.891 112.918 408.536 102.573 380.608 171.22C352.679 239.868 377.873 421.718 432.743 458.466C487.613 495.214 654.008 381.076 626.08 312.428Z" stroke="#14B8A6" stroke-width="2"/>
+
+  <!-- 404 text -->
+  <g opacity="0.9">
+    <!-- Number 4 -->
+    <path d="M290 210L290 330L330 330L330 370L290 370L290 450L230 450L230 370L110 370L110 320L230 140L290 140L290 210Z" fill="#14B8A6"/>
+    <path d="M140 320L230 320L230 190L140 320Z" fill="white"/>
+    
+    <!-- Number 0 -->
+    <ellipse cx="400" cy="300" rx="80" ry="140" fill="#14B8A6"/>
+    <ellipse cx="400" cy="300" rx="40" ry="100" fill="white"/>
+    
+    <!-- Number 4 -->
+    <path d="M590 210L590 330L630 330L630 370L590 370L590 450L530 450L530 370L410 370L410 320L530 140L590 140L590 210Z" fill="#14B8A6"/>
+    <path d="M440 320L530 320L530 190L440 320Z" fill="white"/>
+  </g>
+  
+  <!-- Compass -->
+  <circle cx="400" cy="300" r="18" fill="#065F46" stroke="white" stroke-width="2"/>
+  <path d="M400 280L400 290" stroke="white" stroke-width="2"/>
+  <path d="M400 310L400 320" stroke="white" stroke-width="2"/>
+  <path d="M380 300L390 300" stroke="white" stroke-width="2"/>
+  <path d="M410 300L420 300" stroke="white" stroke-width="2"/>
+  <path d="M392 292L408 308" stroke="white" stroke-width="2"/>
+  <path d="M392 308L408 292" stroke="white" stroke-width="2"/>
+  
+  <!-- Decorative elements -->
+  <path d="M170 130L210 130" stroke="#14B8A6" stroke-width="2" stroke-linecap="round"/>
+  <path d="M600 470L640 470" stroke="#14B8A6" stroke-width="2" stroke-linecap="round"/>
+  <path d="M500 520L540 520" stroke="#14B8A6" stroke-width="2" stroke-linecap="round"/>
+  <path d="M170 470L210 470" stroke="#14B8A6" stroke-width="2" stroke-linecap="round"/>
+  <path d="M600 130L640 130" stroke="#14B8A6" stroke-width="2" stroke-linecap="round"/>
+
+  <circle cx="160" cy="270" r="8" fill="#14B8A6"/>
+  <circle cx="650" cy="270" r="8" fill="#14B8A6"/>
+  <circle cx="400" cy="520" r="8" fill="#14B8A6"/>
+  <circle cx="650" cy="400" r="8" fill="#14B8A6"/>
+  <circle cx="160" cy="400" r="8" fill="#14B8A6"/>
+</svg> 

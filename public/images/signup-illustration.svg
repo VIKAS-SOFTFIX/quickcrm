@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 800 600" fill="none">
+  <path d="M500.08 312.428C472.152 243.78 392.796 254.125 377.344 183.521C361.891 112.918 282.536 102.573 254.608 171.22C226.679 239.868 251.873 421.718 306.743 458.466C361.613 495.214 528.008 381.076 500.08 312.428Z" fill="#4F46E5" opacity="0.1"/>
+  <path d="M500.08 312.428C472.152 243.78 392.796 254.125 377.344 183.521C361.891 112.918 282.536 102.573 254.608 171.22C226.679 239.868 251.873 421.718 306.743 458.466C361.613 495.214 528.008 381.076 500.08 312.428Z" stroke="#4F46E5" stroke-width="2"/>
+  <rect x="190" y="150" width="200" height="300" rx="10" fill="white" stroke="#4F46E5" stroke-width="2"/>
+  <rect x="220" y="180" width="140" height="25" rx="5" fill="#F3F4F6"/>
+  <rect x="220" y="220" width="140" height="25" rx="5" fill="#F3F4F6"/>
+  <rect x="220" y="260" width="140" height="25" rx="5" fill="#F3F4F6"/>
+  <rect x="220" y="300" width="140" height="25" rx="5" fill="#F3F4F6"/>
+  <rect x="220" y="350" width="140" height="40" rx="5" fill="#4F46E5"/>
+  <text x="290" y="375" font-family="Arial" font-size="16" fill="white" text-anchor="middle">SIGN UP</text>
+  <circle cx="550" cy="220" r="100" fill="#F3F4F6"/>
+  <path d="M550 250L590 290" stroke="#4F46E5" stroke-width="8" stroke-linecap="round"/>
+  <path d="M590 250L550 290" stroke="#4F46E5" stroke-width="8" stroke-linecap="round"/>
+  <path d="M510 250L550 290" stroke="#4F46E5" stroke-width="8" stroke-linecap="round"/>
+  <path d="M550 170L550 210" stroke="#4F46E5" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="550" cy="160" r="12" fill="#4F46E5"/>
+  <path d="M150 120L190 120" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"/>
+  <path d="M580 390L620 390" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"/>
+  <path d="M460 480L500 480" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="640" cy="270" r="8" fill="#4F46E5"/>
+  <circle cx="120" cy="270" r="8" fill="#4F46E5"/>
+  <circle cx="420" cy="440" r="8" fill="#4F46E5"/>
+  <circle cx="650" cy="180" r="8" fill="#4F46E5"/>
+</svg> 

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 800 600" fill="none">
+  <path d="M626.08 312.428C598.152 243.78 518.796 254.125 503.344 183.521C487.891 112.918 408.536 102.573 380.608 171.22C352.679 239.868 377.873 421.718 432.743 458.466C487.613 495.214 654.008 381.076 626.08 312.428Z" fill="#4F46E5" opacity="0.1"/>
+  <path d="M626.08 312.428C598.152 243.78 518.796 254.125 503.344 183.521C487.891 112.918 408.536 102.573 380.608 171.22C352.679 239.868 377.873 421.718 432.743 458.466C487.613 495.214 654.008 381.076 626.08 312.428Z" stroke="#4F46E5" stroke-width="2"/>
+  <rect x="430" y="150" width="200" height="300" rx="10" fill="white" stroke="#4F46E5" stroke-width="2"/>
+  <rect x="460" y="200" width="140" height="25" rx="5" fill="#F3F4F6"/>
+  <rect x="460" y="240" width="140" height="25" rx="5" fill="#F3F4F6"/>
+  <rect x="460" y="320" width="140" height="40" rx="5" fill="#4F46E5"/>
+  <text x="530" y="345" font-family="Arial" font-size="16" fill="white" text-anchor="middle">LOGIN</text>
+  <circle cx="230" cy="220" r="120" fill="#F3F4F6"/>
+  <path d="M230 160C213.431 160 200 173.431 200 190C200 206.569 213.431 220 230 220C246.569 220 260 206.569 260 190C260 173.431 246.569 160 230 160Z" fill="#4F46E5"/>
+  <path d="M230 230C196.863 230 170 256.863 170 290V300H290V290C290 256.863 263.137 230 230 230Z" fill="#4F46E5"/>
+  <path d="M380 120L420 120" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"/>
+  <path d="M170 390L210 390" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"/>
+  <path d="M340 460L380 460" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="160" cy="270" r="8" fill="#4F46E5"/>
+  <circle cx="380" cy="180" r="8" fill="#4F46E5"/>
+  <circle cx="420" cy="350" r="8" fill="#4F46E5"/>
+</svg> 
