@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import Image from "next/image";
 import {
   Select,
   SelectContent,
@@ -32,9 +33,9 @@ interface LeadFormData {
 }
 
 export function FormPreview({ theme, template, fields, style, config }: FormPreviewProps) {
-  const [selectedValues, setSelectedValues] = useState<Record<string, any>>({});
+  const [selectedValues, setSelectedValues] = useState<Record<string, unknown>>({});
 
-  const handleValueChange = (fieldId: string, value: any) => {
+  const handleValueChange = (fieldId: string, value: unknown) => {
     setSelectedValues((prev) => ({
       ...prev,
       [fieldId]: value,
@@ -63,7 +64,7 @@ export function FormPreview({ theme, template, fields, style, config }: FormPrev
       case "select":
         return (
           <Select
-            value={selectedValues[field.id]}
+            value={selectedValues[field.id] as string}
             onValueChange={(value) => handleValueChange(field.id, value)}
           >
             <SelectTrigger className="mt-1">
@@ -82,7 +83,7 @@ export function FormPreview({ theme, template, fields, style, config }: FormPrev
         return (
           <select
             multiple
-            value={selectedValues[field.id] || []}
+            value={selectedValues[field.id] as string[] || []}
             onChange={(e) =>
               handleValueChange(
                 field.id,
@@ -104,7 +105,7 @@ export function FormPreview({ theme, template, fields, style, config }: FormPrev
           <div className="flex items-center mt-1">
             <Checkbox
               id={field.id}
-              checked={selectedValues[field.id] || false}
+              checked={selectedValues[field.id] as boolean || false}
               onCheckedChange={(checked) => handleValueChange(field.id, checked)}
             />
             <label
@@ -123,10 +124,10 @@ export function FormPreview({ theme, template, fields, style, config }: FormPrev
                 <Checkbox
                   id={`${field.id}-${option}`}
                   checked={
-                    (selectedValues[field.id] || []).includes(option)
+                    ((selectedValues[field.id] as string[]) || []).includes(option)
                   }
                   onCheckedChange={(checked) => {
-                    const currentValues = selectedValues[field.id] || [];
+                    const currentValues = (selectedValues[field.id] as string[]) || [];
                     const newValues = checked
                       ? [...currentValues, option]
                       : currentValues.filter((v: string) => v !== option);
@@ -158,7 +159,7 @@ export function FormPreview({ theme, template, fields, style, config }: FormPrev
               <input
                 type="checkbox"
                 className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
-                checked={selectedValues[field.id] || false}
+                checked={selectedValues[field.id] as boolean || false}
                 onChange={(e) => handleValueChange(field.id, e.target.checked)}
               />
               <label className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
@@ -176,7 +177,7 @@ export function FormPreview({ theme, template, fields, style, config }: FormPrev
                 key={value}
                 type="button"
                 className={`text-2xl ${
-                  (selectedValues[field.id] || 0) >= value
+                  ((selectedValues[field.id] as number) || 0) >= value
                     ? "text-yellow-400"
                     : "text-gray-300"
                 } hover:text-yellow-400`}
@@ -213,14 +214,18 @@ export function FormPreview({ theme, template, fields, style, config }: FormPrev
       {/* Logo */}
       {style.logoUrl && (
         <div className="flex justify-center mb-6">
-          <img
-            src={style.logoUrl}
-            alt="Form Logo"
-            className="max-h-16 object-contain"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
-          />
+          <div className="relative h-16 w-auto">
+            <Image
+              src={style.logoUrl}
+              alt="Form Logo"
+              className="object-contain"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = "none";
+              }}
+            />
+          </div>
         </div>
       )}
 
@@ -259,7 +264,7 @@ export function FormPreview({ theme, template, fields, style, config }: FormPrev
             color: "#ffffff",
             "--button-hover-bg": style.buttonColor + "dd",
             "--button-hover-border": style.buttonColor + "dd",
-          } as any}
+          } as React.CSSProperties}
         >
           Submit
         </Button>
