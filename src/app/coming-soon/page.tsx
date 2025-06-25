@@ -1,14 +1,29 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
 import Image from "next/image";
 import { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Coming Soon | QuickCRM",
-  description: "Our new features are coming soon to the QuickCRM platform",
-};
+// export const metadata: Metadata = {
+//   title: "Coming Soon | QuickCRM",
+//   description: "Our new features are coming soon to the QuickCRM platform",
+// };
 
 export default function ComingSoon() {
+  const [email, setEmail] = useState("");
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: Implement subscription logic
+    setIsSubscribed(true);
+  };
+
   return (
     <div className="min-h-screen w-full flex bg-gradient-to-br from-teal-50 via-white to-emerald-50 relative">
       {/* Background Graphics */}
@@ -89,23 +104,37 @@ export default function ComingSoon() {
                 </div>
               </div>
 
-              <form className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto md:mx-0 mb-6">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex h-12 w-full rounded-md border border-input bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                />
-                <Button className="h-12 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700">
-                  Notify Me
-                </Button>
-              </form>
+              {isSubscribed ? (
+                <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+                  <p className="text-teal-700 text-center md:text-left">
+                    Thanks for subscribing! We'll notify you when we launch.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubscribe} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <Button type="submit" className="w-full">
+                    Notify Me
+                  </Button>
+                </form>
+              )}
 
               <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 mt-10">
-                <Button asChild variant="outline" className="border-teal-200 text-teal-700 hover:bg-teal-50">
+                <Button variant="outline" className="border-teal-200 text-teal-700 hover:bg-teal-50">
                   <Link href="/login">Back to Login</Link>
                 </Button>
                 <Link href="/dashboard" className="text-teal-600 hover:text-teal-800 font-medium transition-colors">
-                  Explore Current Features
+                  Go to Dashboard
                 </Link>
               </div>
             </div>

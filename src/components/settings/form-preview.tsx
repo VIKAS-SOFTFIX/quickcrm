@@ -8,19 +8,36 @@ interface FormPreviewProps {
   template: string;
 }
 
+// Define the shape of form data
+interface LeadFormData {
+  name: string;
+  email: string;
+  phone?: string;
+  company?: string;
+  message?: string;
+}
+
+interface FormConfig {
+  theme: string;
+  template: string;
+  apiKey: string;
+  onSubmit?: (data: LeadFormData) => void;
+}
+
 export function FormPreview({ theme, template }: FormPreviewProps) {
   useEffect(() => {
     // Initialize form when script is loaded
     const initForm = () => {
       if (window.QuickCRM) {
-        window.QuickCRM.initLeadForm({
+        const config: FormConfig = {
           theme,
           template,
           apiKey: "preview-mode",
-          onSubmit: (data) => {
+          onSubmit: (data: LeadFormData) => {
             console.log("Preview form submitted:", data);
           }
-        });
+        };
+        window.QuickCRM.initLeadForm(config);
       }
     };
 
@@ -50,12 +67,7 @@ export function FormPreview({ theme, template }: FormPreviewProps) {
 declare global {
   interface Window {
     QuickCRM?: {
-      initLeadForm: (config: {
-        theme: string;
-        template: string;
-        apiKey: string;
-        onSubmit?: (data: any) => void;
-      }) => void;
+      initLeadForm: (config: FormConfig) => void;
     };
   }
 } 
