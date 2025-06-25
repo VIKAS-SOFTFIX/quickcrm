@@ -13,9 +13,12 @@ import {
   User
 } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar-context";
+import { Loader } from "@/components/ui/loader";
+import { useLoading } from "@/components/layout/loading-provider";
 
 export function AppHeader() {
   const { isExpanded } = useSidebar();
+  const { isLoading } = useLoading();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -75,6 +78,14 @@ export function AppHeader() {
         
         {/* Right side actions */}
         <div className="flex items-center space-x-1">
+          {/* Loading indicator */}
+          {isLoading && (
+            <div className="mr-2 bg-teal-50 px-3 py-1 rounded-full flex items-center">
+              <Loader size="sm" type="ai" />
+              <span className="ml-2 text-xs text-teal-700">Processing</span>
+            </div>
+          )}
+          
           {/* Help */}
           <button className="p-2 rounded-full hover:bg-gray-100 text-gray-600">
             <HelpCircle className="h-5 w-5" />

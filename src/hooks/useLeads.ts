@@ -4,343 +4,237 @@ export interface Lead {
   id: string;
   name: string;
   company: string;
-  contact: string;
   email: string;
   phone: string;
-  assignedTo: {
-    id: string;
-    name: string;
-    avatar?: string;
-  };
-  status: 'new' | 'contacted' | 'qualified' | 'proposal' | 'won' | 'lost';
+  address: string;
+  website?: string;
   source: string;
-  value: number;
-  notes?: string;
+  status: string;
+  tags: string[];
   createdAt: Date;
-  updatedAt: Date;
-  lastContact?: Date;
+  lastContactedAt?: Date;
+  notes: string;
 }
 
 interface UseLeadsOptions {
-  initialStatus?: Lead['status'] | 'all';
+  initialStatus?: string | 'all';
   pageSize?: number;
 }
 
-export function useLeads({ initialStatus, pageSize = 10 }: UseLeadsOptions = {}) {
+export function useLeads({ initialStatus, pageSize = 5 }: UseLeadsOptions = {}) {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalLeads, setTotalLeads] = useState(0);
-  const [activeStatus, setActiveStatus] = useState<Lead['status'] | 'all'>(initialStatus || 'all');
+  const [activeStatus, setActiveStatus] = useState<string | 'all'>(initialStatus || 'all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortField, setSortField] = useState<keyof Lead>('updatedAt');
+  const [sortField, setSortField] = useState<keyof Lead>('createdAt');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
-  // Mock data for demonstration
-  const mockLeads: Lead[] = useMemo(() => [
-    {
-      id: '1',
-      name: 'John Smith',
-      company: 'Acme Corp',
-      contact: 'CEO',
-      email: 'john@acmecorp.com',
-      phone: '(555) 123-4567',
-      assignedTo: {
-        id: '101',
-        name: 'Sarah Johnson',
-        avatar: '/avatars/sarah.jpg',
+  // Generate more mock data for testing pagination
+  const mockLeads: Lead[] = useMemo(() => {
+    const baseLeads = [
+      {
+        id: "1",
+        name: "John Smith",
+        company: "Acme Inc",
+        email: "john@acme.com",
+        phone: "+1 (555) 123-4567",
+        address: "123 Main St, San Francisco, CA",
+        website: "acme.com",
+        source: "Website",
+        status: "New",
+        tags: ["Software", "Enterprise"],
+        createdAt: new Date(2023, 5, 15),
+        lastContactedAt: new Date(2023, 5, 20),
+        notes: "Initial contact made through website form. Interested in enterprise solution."
       },
-      status: 'new',
-      source: 'Website',
-      value: 15000,
-      notes: 'Interested in our enterprise plan',
-      createdAt: new Date('2023-06-15'),
-      updatedAt: new Date('2023-06-15'),
-    },
-    {
-      id: '2',
-      name: 'Emily Davis',
-      company: 'TechGiant Inc',
-      contact: 'Marketing Director',
-      email: 'emily@techgiant.com',
-      phone: '(555) 987-6543',
-      assignedTo: {
-        id: '102',
-        name: 'Michael Chen',
-        avatar: '/avatars/michael.jpg',
+      {
+        id: "2",
+        name: "Jane Doe",
+        company: "XYZ Corp",
+        email: "jane@xyz.com",
+        phone: "+1 (555) 987-6543",
+        address: "456 Market St, New York, NY",
+        website: "xyzcorp.com",
+        source: "Referral",
+        status: "Contacted",
+        tags: ["Hardware", "SMB"],
+        createdAt: new Date(2023, 5, 10),
+        lastContactedAt: new Date(2023, 5, 18),
+        notes: "Referred by existing client. Looking for hardware solutions for small business."
       },
-      status: 'contacted',
-      source: 'LinkedIn',
-      value: 25000,
-      notes: 'Had initial call, follow up next week',
-      createdAt: new Date('2023-06-10'),
-      updatedAt: new Date('2023-06-14'),
-      lastContact: new Date('2023-06-14'),
-    },
-    {
-      id: '3',
-      name: 'Robert Johnson',
-      company: 'Global Services Ltd',
-      contact: 'CTO',
-      email: 'robert@globalservices.com',
-      phone: '(555) 456-7890',
-      assignedTo: {
-        id: '103',
-        name: 'Jessica Lee',
-        avatar: '/avatars/jessica.jpg',
+      {
+        id: "3",
+        name: "Robert Johnson",
+        company: "Tech Solutions",
+        email: "robert@techsolutions.com",
+        phone: "+1 (555) 456-7890",
+        address: "789 Broadway, Chicago, IL",
+        website: "techsolutions.com",
+        source: "Trade Show",
+        status: "Qualified",
+        tags: ["Software", "Healthcare"],
+        createdAt: new Date(2023, 4, 25),
+        lastContactedAt: new Date(2023, 5, 15),
+        notes: "Met at TechExpo. Interested in healthcare software solutions."
       },
-      status: 'qualified',
-      source: 'Referral',
-      value: 50000,
-      notes: 'Needs custom integration solution',
-      createdAt: new Date('2023-06-05'),
-      updatedAt: new Date('2023-06-12'),
-      lastContact: new Date('2023-06-12'),
-    },
-    {
-      id: '4',
-      name: 'Lisa Wang',
-      company: 'Innovative Solutions',
-      contact: 'CEO',
-      email: 'lisa@innovative.com',
-      phone: '(555) 789-0123',
-      assignedTo: {
-        id: '101',
-        name: 'Sarah Johnson',
-        avatar: '/avatars/sarah.jpg',
+      {
+        id: "4",
+        name: "Emily Williams",
+        company: "Global Services",
+        email: "emily@globalservices.com",
+        phone: "+1 (555) 234-5678",
+        address: "321 Park Ave, Boston, MA",
+        website: "globalservices.com",
+        source: "Email Campaign",
+        status: "Proposal",
+        tags: ["Consulting", "Enterprise"],
+        createdAt: new Date(2023, 4, 20),
+        lastContactedAt: new Date(2023, 5, 12),
+        notes: "Responded to Q2 email campaign. Requested proposal for enterprise consulting services."
       },
-      status: 'proposal',
-      source: 'Conference',
-      value: 75000,
-      notes: 'Proposal sent, awaiting feedback',
-      createdAt: new Date('2023-05-28'),
-      updatedAt: new Date('2023-06-10'),
-      lastContact: new Date('2023-06-10'),
-    },
-    {
-      id: '5',
-      name: 'David Wilson',
-      company: 'MegaCorp',
-      contact: 'Procurement Manager',
-      email: 'david@megacorp.com',
-      phone: '(555) 234-5678',
-      assignedTo: {
-        id: '102',
-        name: 'Michael Chen',
-        avatar: '/avatars/michael.jpg',
+      {
+        id: "5",
+        name: "Michael Brown",
+        company: "Innovative Solutions",
+        email: "michael@innovative.com",
+        phone: "+1 (555) 876-5432",
+        address: "654 Pine St, Seattle, WA",
+        website: "innovative.com",
+        source: "Social Media",
+        status: "Negotiation",
+        tags: ["Software", "Startup"],
+        createdAt: new Date(2023, 4, 15),
+        lastContactedAt: new Date(2023, 5, 10),
+        notes: "Found us through LinkedIn. Startup looking for software solutions. Price negotiation in progress."
       },
-      status: 'won',
-      source: 'Website',
-      value: 120000,
-      notes: 'Contract signed, implementation starting next month',
-      createdAt: new Date('2023-05-15'),
-      updatedAt: new Date('2023-06-08'),
-      lastContact: new Date('2023-06-08'),
-    },
-    {
-      id: '6',
-      name: 'Maria Rodriguez',
-      company: 'StartUp Ventures',
-      contact: 'Founder',
-      email: 'maria@startup.com',
-      phone: '(555) 345-6789',
-      assignedTo: {
-        id: '103',
-        name: 'Jessica Lee',
-        avatar: '/avatars/jessica.jpg',
+      {
+        id: "6",
+        name: "Sarah Miller",
+        company: "City Hospital",
+        email: "sarah@cityhospital.org",
+        phone: "+1 (555) 345-6789",
+        address: "987 Oak St, Austin, TX",
+        website: "cityhospital.org",
+        source: "Referral",
+        status: "Won",
+        tags: ["Healthcare", "Enterprise"],
+        createdAt: new Date(2023, 3, 10),
+        lastContactedAt: new Date(2023, 5, 5),
+        notes: "Referred by Dr. Johnson. Deal closed for enterprise healthcare solution."
       },
-      status: 'new',
-      source: 'Email Campaign',
-      value: 10000,
-      notes: 'Looking for affordable solution',
-      createdAt: new Date('2023-06-16'),
-      updatedAt: new Date('2023-06-16'),
-    },
-    {
-      id: '7',
-      name: 'Thomas Brown',
-      company: 'Local Business Inc',
-      contact: 'Owner',
-      email: 'thomas@localbusiness.com',
-      phone: '(555) 456-7890',
-      assignedTo: {
-        id: '101',
-        name: 'Sarah Johnson',
-        avatar: '/avatars/sarah.jpg',
-      },
-      status: 'contacted',
-      source: 'Google Ads',
-      value: 5000,
-      notes: 'Scheduled demo for next week',
-      createdAt: new Date('2023-06-12'),
-      updatedAt: new Date('2023-06-15'),
-      lastContact: new Date('2023-06-15'),
-    },
-    {
-      id: '8',
-      name: 'James Miller',
-      company: 'Enterprise Corp',
-      contact: 'IT Director',
-      email: 'james@enterprise.com',
-      phone: '(555) 567-8901',
-      assignedTo: {
-        id: '102',
-        name: 'Michael Chen',
-        avatar: '/avatars/michael.jpg',
-      },
-      status: 'qualified',
-      source: 'LinkedIn',
-      value: 80000,
-      notes: 'Needs enterprise-level solution',
-      createdAt: new Date('2023-06-01'),
-      updatedAt: new Date('2023-06-11'),
-      lastContact: new Date('2023-06-11'),
-    },
-    {
-      id: '9',
-      name: 'Jennifer Lee',
-      company: 'Creative Designs',
-      contact: 'Creative Director',
-      email: 'jennifer@creativedesigns.com',
-      phone: '(555) 678-9012',
-      assignedTo: {
-        id: '103',
-        name: 'Jessica Lee',
-        avatar: '/avatars/jessica.jpg',
-      },
-      status: 'proposal',
-      source: 'Referral',
-      value: 30000,
-      notes: 'Proposal under review',
-      createdAt: new Date('2023-05-20'),
-      updatedAt: new Date('2023-06-09'),
-      lastContact: new Date('2023-06-09'),
-    },
-    {
-      id: '10',
-      name: 'Michael Thompson',
-      company: 'Thompson & Co',
-      contact: 'CEO',
-      email: 'michael@thompson.com',
-      phone: '(555) 789-0123',
-      assignedTo: {
-        id: '101',
-        name: 'Sarah Johnson',
-        avatar: '/avatars/sarah.jpg',
-      },
-      status: 'won',
-      source: 'Conference',
-      value: 100000,
-      notes: 'Deal closed, implementation in progress',
-      createdAt: new Date('2023-05-10'),
-      updatedAt: new Date('2023-06-05'),
-      lastContact: new Date('2023-06-05'),
-    },
-    {
-      id: '11',
-      name: 'Sarah Adams',
-      company: 'Adams Consulting',
-      contact: 'Principal',
-      email: 'sarah@adamsconsulting.com',
-      phone: '(555) 890-1234',
-      assignedTo: {
-        id: '102',
-        name: 'Michael Chen',
-        avatar: '/avatars/michael.jpg',
-      },
-      status: 'lost',
-      source: 'Website',
-      value: 45000,
-      notes: 'Chose competitor solution due to pricing',
-      createdAt: new Date('2023-05-25'),
-      updatedAt: new Date('2023-06-07'),
-      lastContact: new Date('2023-06-07'),
-    },
-    {
-      id: '12',
-      name: 'Daniel Kim',
-      company: 'Kim Technologies',
-      contact: 'CTO',
-      email: 'daniel@kimtech.com',
-      phone: '(555) 901-2345',
-      assignedTo: {
-        id: '103',
-        name: 'Jessica Lee',
-        avatar: '/avatars/jessica.jpg',
-      },
-      status: 'new',
-      source: 'Email Campaign',
-      value: 60000,
-      notes: 'Interested in AI features',
-      createdAt: new Date('2023-06-17'),
-      updatedAt: new Date('2023-06-17'),
-    },
-  ], []);
+      {
+        id: "7",
+        name: "David Wilson",
+        company: "Retail Chains Inc",
+        email: "david@retailchains.com",
+        phone: "+1 (555) 567-8901",
+        address: "567 Elm St, Miami, FL",
+        website: "retailchains.com",
+        source: "Cold Call",
+        status: "Lost",
+        tags: ["Retail", "Enterprise"],
+        createdAt: new Date(2023, 3, 5),
+        lastContactedAt: new Date(2023, 4, 28),
+        notes: "Lost to competitor due to pricing concerns."
+      }
+    ];
+    
+    // Generate additional leads for testing pagination
+    const additionalLeads: Lead[] = [];
+    const statuses = ["New", "Contacted", "Qualified", "Proposal", "Negotiation", "Won", "Lost"];
+    const sources = ["Website", "Referral", "Trade Show", "Email Campaign", "Social Media", "Cold Call"];
+    const companies = ["Tech Corp", "Global Industries", "Modern Solutions", "Digital Innovations", "Smart Systems", "Future Tech"];
+    
+    for (let i = 8; i <= 25; i++) {
+      additionalLeads.push({
+        id: i.toString(),
+        name: `Lead ${i}`,
+        company: companies[Math.floor(Math.random() * companies.length)],
+        email: `lead${i}@example.com`,
+        phone: `+1 (555) ${Math.floor(100 + Math.random() * 900)}-${Math.floor(1000 + Math.random() * 9000)}`,
+        address: `${Math.floor(100 + Math.random() * 900)} Example St, City, State`,
+        website: `example${i}.com`,
+        source: sources[Math.floor(Math.random() * sources.length)],
+        status: statuses[Math.floor(Math.random() * statuses.length)],
+        tags: ["Sample", `Tag${i}`],
+        createdAt: new Date(2023, Math.floor(Math.random() * 6), Math.floor(1 + Math.random() * 28)),
+        lastContactedAt: new Date(2023, Math.floor(Math.random() * 6), Math.floor(1 + Math.random() * 28)),
+        notes: `This is a sample lead ${i} for testing pagination.`
+      });
+    }
+    
+    return [...baseLeads, ...additionalLeads];
+  }, []);
 
-  // Filter and sort leads based on current state
+  // Load leads on component mount
+  useEffect(() => {
+    // Simulate API call
+    setTimeout(() => {
+      setLeads(mockLeads);
+      setTotalLeads(mockLeads.length);
+      setLoading(false);
+    }, 500);
+  }, [mockLeads]);
+
+  // Filter leads based on active status and search query
   const filteredLeads = useMemo(() => {
-    let result = [...mockLeads];
-    
-    // Filter by status
-    if (activeStatus !== 'all') {
-      result = result.filter(lead => lead.status === activeStatus);
-    }
-    
-    // Filter by search query
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      result = result.filter(lead => 
-        lead.name.toLowerCase().includes(query) ||
-        lead.company.toLowerCase().includes(query) ||
-        lead.email.toLowerCase().includes(query)
-      );
-    }
-    
-    // Sort
-    result.sort((a, b) => {
-      const fieldA = a[sortField];
-      const fieldB = b[sortField];
+    return mockLeads.filter((lead) => {
+      // Filter by status
+      const statusMatch = activeStatus === 'all' || lead.status.toLowerCase() === activeStatus.toLowerCase();
       
-      // Handle potentially undefined values
-      if (fieldA === undefined && fieldB === undefined) return 0;
-      if (fieldA === undefined) return sortDirection === 'asc' ? -1 : 1;
-      if (fieldB === undefined) return sortDirection === 'asc' ? 1 : -1;
+      // Filter by search query
+      const searchLower = searchQuery.toLowerCase();
+      const searchMatch = searchQuery === '' || 
+        lead.name.toLowerCase().includes(searchLower) ||
+        lead.company.toLowerCase().includes(searchLower) ||
+        lead.email.toLowerCase().includes(searchLower) ||
+        lead.phone.toLowerCase().includes(searchLower);
       
-      if (fieldA < fieldB) return sortDirection === 'asc' ? -1 : 1;
-      if (fieldA > fieldB) return sortDirection === 'asc' ? 1 : -1;
+      return statusMatch && searchMatch;
+    });
+  }, [mockLeads, activeStatus, searchQuery]);
+
+  // Sort filtered leads
+  const sortedLeads = useMemo(() => {
+    return [...filteredLeads].sort((a, b) => {
+      const aValue = a[sortField];
+      const bValue = b[sortField];
+      
+      if (aValue === bValue) return 0;
+      
+      if (sortField === 'createdAt' || sortField === 'lastContactedAt') {
+        const aDate = aValue as Date;
+        const bDate = bValue as Date;
+        return sortDirection === 'asc' 
+          ? aDate.getTime() - bDate.getTime() 
+          : bDate.getTime() - aDate.getTime();
+      }
+      
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' 
+          ? aValue.localeCompare(bValue) 
+          : bValue.localeCompare(aValue);
+      }
+      
       return 0;
     });
-    
-    return result;
-  }, [mockLeads, activeStatus, searchQuery, sortField, sortDirection]);
+  }, [filteredLeads, sortField, sortDirection]);
 
   // Paginate leads
   const paginatedLeads = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
-    return filteredLeads.slice(startIndex, startIndex + pageSize);
-  }, [filteredLeads, currentPage, pageSize]);
+    const endIndex = startIndex + pageSize;
+    return sortedLeads.slice(startIndex, endIndex);
+  }, [sortedLeads, currentPage, pageSize]);
 
   // Calculate total pages
-  const totalPages = useMemo(() => 
-    Math.ceil(filteredLeads.length / pageSize),
-    [filteredLeads, pageSize]
-  );
+  const totalPages = useMemo(() => {
+    return Math.ceil(filteredLeads.length / pageSize);
+  }, [filteredLeads, pageSize]);
 
-  // Load leads (simulating API call)
-  useEffect(() => {
-    setLoading(true);
-    
-    // Simulate API delay
-    const timer = setTimeout(() => {
-      setLeads(paginatedLeads);
-      setTotalLeads(filteredLeads.length);
-      setLoading(false);
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, [paginatedLeads, filteredLeads]);
-
-  // Handle sorting
+  // Handle sort change
   const handleSort = (field: keyof Lead) => {
     if (field === sortField) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -352,33 +246,20 @@ export function useLeads({ initialStatus, pageSize = 10 }: UseLeadsOptions = {})
 
   // Get lead by ID
   const getLeadById = (id: string) => {
-    return mockLeads.find(lead => lead.id === id);
+    return mockLeads.find(lead => lead.id === id) || null;
   };
 
   // Update lead
   const updateLead = (id: string, updates: Partial<Lead>) => {
-    setLeads(prevLeads => 
-      prevLeads.map(lead => 
-        lead.id === id ? { ...lead, ...updates, updatedAt: new Date() } : lead
-      )
-    );
-  };
-
-  // Assign lead to team member
-  const assignLead = (leadId: string, assigneeId: string, assigneeName: string, assigneeAvatar?: string) => {
-    updateLead(leadId, {
-      assignedTo: {
-        id: assigneeId,
-        name: assigneeName,
-        avatar: assigneeAvatar
-      }
-    });
+    setLeads(leads.map(lead => 
+      lead.id === id ? { ...lead, ...updates } : lead
+    ));
   };
 
   return {
-    leads,
+    leads: paginatedLeads,
     loading,
-    totalLeads,
+    totalLeads: filteredLeads.length,
     currentPage,
     setCurrentPage,
     totalPages,
@@ -390,7 +271,6 @@ export function useLeads({ initialStatus, pageSize = 10 }: UseLeadsOptions = {})
     sortDirection,
     handleSort,
     getLeadById,
-    updateLead,
-    assignLead
+    updateLead
   };
 } 

@@ -1,39 +1,30 @@
 "use client";
 
-import { Lead } from "@/hooks/useLeads";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-interface LeadsTabsProps {
-  activeStatus: Lead['status'] | 'all';
-  onStatusChange: (status: Lead['status'] | 'all') => void;
-  counts: {
-    all: number;
-    new: number;
-    contacted: number;
-    qualified: number;
-    proposal: number;
-    won: number;
-    lost: number;
-  };
-}
-
-export function LeadsTabs({ activeStatus, onStatusChange, counts }: LeadsTabsProps) {
+export function LeadsTabs() {
+  const [activeStatus, setActiveStatus] = useState("all");
+  
+  // Mock counts for demonstration
   const tabs = [
-    { key: 'all', label: 'All', count: counts.all },
-    { key: 'new', label: 'New', count: counts.new },
-    { key: 'contacted', label: 'Contacted', count: counts.contacted },
-    { key: 'qualified', label: 'Qualified', count: counts.qualified },
-    { key: 'proposal', label: 'Proposal', count: counts.proposal },
-    { key: 'won', label: 'Won', count: counts.won },
+    { key: 'all', label: 'All', count: 7 },
+    { key: 'new', label: 'New', count: 1 },
+    { key: 'contacted', label: 'Contacted', count: 1 },
+    { key: 'qualified', label: 'Qualified', count: 1 },
+    { key: 'proposal', label: 'Proposal', count: 1 },
+    { key: 'negotiation', label: 'Negotiation', count: 1 },
+    { key: 'won', label: 'Won', count: 1 },
+    { key: 'lost', label: 'Lost', count: 1 },
   ];
   
   return (
     <div className="border-b border-gray-200">
-      <nav className="-mb-px flex space-x-8">
+      <nav className="-mb-px flex space-x-8 overflow-x-auto hide-scrollbar">
         {tabs.map((tab) => (
           <button
             key={tab.key}
-            onClick={() => onStatusChange(tab.key as Lead['status'] | 'all')}
+            onClick={() => setActiveStatus(tab.key)}
             className={cn(
               "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm",
               activeStatus === tab.key
