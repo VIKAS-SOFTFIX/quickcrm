@@ -77,7 +77,7 @@ export default function LeadsPage() {
   };
   
   return (
-    <div className="container mx-auto py-6">
+    <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Leads</h1>

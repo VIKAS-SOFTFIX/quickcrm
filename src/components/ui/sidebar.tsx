@@ -20,6 +20,7 @@ import {
   Video,
   BrainCircuit,
   BarChart,
+  BarChart3,
   MessagesSquare,
   Ticket,
   HelpCircle,
@@ -34,6 +35,7 @@ import {
   FileText,
   MessageCircle,
   SendHorizontal,
+  Share2
 } from "lucide-react";
 import { useSidebar } from "./sidebar-context";
 import { cn } from "@/lib/utils";
@@ -201,15 +203,17 @@ export function Sidebar() {
 
           <SidebarSection title="Communications" />
           <SidebarItem href="/email" icon={<Mail size={20} />} label="Email Box" />
-          <SidebarItem href="/whatsapp" icon={<MessageSquare size={20} />} label="WhatsApp" />
-          <SidebarItem href="/email-marketing" icon={<SendHorizontal size={20} />} label="Email Marketing" />
+          <SidebarItem href="/whatsapp" icon={<MessageSquare size={20} />} label="WhatsApp Chat" />
 
           <SidebarSection title="Marketing" />
-          <SidebarItem href="/email-marketing" icon={<Megaphone size={20} />} label="Email Marketing" />
-          <SidebarItem href="/coming-soon" icon={<MessagesSquare size={20} />} label="WhatsApp Marketing" />
+          <SidebarItem href="/email-marketing" icon={<SendHorizontal size={20} />} label="Email Marketing" />
+          <SidebarItem href="/coming-soon" icon={<MessageSquare size={20} />} label="WhatsApp Marketing" />
+          <SidebarItem href="/coming-soon" icon={<Share2 size={20} />} label="Meta Ads" />
+          <SidebarItem href="/coming-soon" icon={<BarChart3 size={20} />} label="Google Ads" />
           <SidebarItem href="/coming-soon" icon={<BarChart size={20} />} label="Analytics" />
 
           <SidebarSection title="SEO Tools" />
+          <SidebarItem href="/coming-soon" icon={<Globe size={20} />} label="Google Business" />
           <SidebarItem
             href="/coming-soon"
             icon={<BrainCircuit size={20} />}

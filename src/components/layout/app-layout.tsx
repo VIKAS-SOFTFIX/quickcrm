@@ -16,7 +16,9 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
           isExpanded ? "sm:pl-16 md:pl-64" : "pl-16"
         }`}
       >
-        {children}
+        <div className="max-w-[2000px] mx-auto p-6">
+          {children}
+        </div>
       </main>
     </div>
   );

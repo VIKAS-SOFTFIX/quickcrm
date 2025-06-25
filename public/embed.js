@@ -1,344 +1,409 @@
 // QuickCRM Lead Form Embed Script
 (function() {
-  // Configuration defaults
-  const defaultConfig = {
-    theme: 'light',
-    template: 'default',
-    apiKey: null,
-    onSubmit: null,
+  // Create global QuickCRM object
+  window.QuickCRM = window.QuickCRM || {};
+
+  // Default configuration
+  const DEFAULT_CONFIG = {
+    logoUrl: "https://quickbid.co.in/Assets/Images/logo.png",
+    buttonColor: "#10B981",
+    type: "lead",
+    title: "Contact Us",
+    description: "Get in touch with our team"
   };
 
-  // Form templates
-  const templates = {
-    default: `
-      <form class="quickcrm-form">
-        <div class="quickcrm-form-group">
-          <label for="name">Full Name</label>
-          <input type="text" id="name" name="name" required>
-        </div>
-        <div class="quickcrm-form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required>
-        </div>
-        <div class="quickcrm-form-group">
-          <label for="phone">Phone</label>
-          <input type="tel" id="phone" name="phone">
-        </div>
-        <div class="quickcrm-form-group">
-          <label for="company">Company</label>
-          <input type="text" id="company" name="company">
-        </div>
-        <div class="quickcrm-form-group">
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="3"></textarea>
-        </div>
-        <button type="submit" class="quickcrm-submit">Submit</button>
-      </form>
-    `,
-    minimal: `
-      <form class="quickcrm-form quickcrm-minimal">
-        <div class="quickcrm-form-group">
-          <input type="text" id="name" name="name" placeholder="Full Name" required>
-        </div>
-        <div class="quickcrm-form-group">
-          <input type="email" id="email" name="email" placeholder="Email" required>
-        </div>
-        <div class="quickcrm-form-group">
-          <textarea id="message" name="message" placeholder="Message" rows="3"></textarea>
-        </div>
-        <button type="submit" class="quickcrm-submit">Get in Touch</button>
-      </form>
-    `,
-    modern: `
-      <form class="quickcrm-form quickcrm-modern">
-        <h3>Contact Us</h3>
-        <div class="quickcrm-form-row">
-          <div class="quickcrm-form-group">
-            <input type="text" id="name" name="name" required>
-            <label for="name">Full Name</label>
-          </div>
-          <div class="quickcrm-form-group">
-            <input type="email" id="email" name="email" required>
-            <label for="email">Email</label>
-          </div>
-        </div>
-        <div class="quickcrm-form-group">
-          <input type="tel" id="phone" name="phone">
-          <label for="phone">Phone</label>
-        </div>
-        <div class="quickcrm-form-group">
-          <textarea id="message" name="message" rows="3"></textarea>
-          <label for="message">Message</label>
-        </div>
-        <button type="submit" class="quickcrm-submit">Send Message</button>
-      </form>
-    `,
-    classic: `
-      <form class="quickcrm-form quickcrm-classic">
-        <div class="quickcrm-header">
-          <h3>Contact Information</h3>
-          <p>Please fill out the form below and we'll get back to you shortly.</p>
-        </div>
-        <div class="quickcrm-form-group">
-          <label for="name">Full Name *</label>
-          <input type="text" id="name" name="name" required>
-        </div>
-        <div class="quickcrm-form-group">
-          <label for="email">Email Address *</label>
-          <input type="email" id="email" name="email" required>
-        </div>
-        <div class="quickcrm-form-group">
-          <label for="phone">Phone Number</label>
-          <input type="tel" id="phone" name="phone">
-        </div>
-        <div class="quickcrm-form-group">
-          <label for="company">Company Name</label>
-          <input type="text" id="company" name="company">
-        </div>
-        <div class="quickcrm-form-group">
-          <label for="message">Your Message</label>
-          <textarea id="message" name="message" rows="4"></textarea>
-        </div>
-        <button type="submit" class="quickcrm-submit">Submit Form</button>
-      </form>
-    `
-  };
-
-  // Styles for different themes
+  // Initialize styles
   const styles = {
-    base: `
-      .quickcrm-form {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-      .quickcrm-form-group {
-        margin-bottom: 1rem;
-      }
-      .quickcrm-form input,
-      .quickcrm-form textarea {
-        width: 100%;
-        padding: 8px 12px;
-        border-radius: 4px;
-        font-size: 14px;
-        line-height: 1.5;
-      }
-      .quickcrm-submit {
-        width: 100%;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: 600;
-      }
-    `,
-    light: `
-      .quickcrm-form input,
-      .quickcrm-form textarea {
-        border: 1px solid #ddd;
-        background: #fff;
-        color: #333;
-      }
-      .quickcrm-form label {
-        color: #555;
-      }
-      .quickcrm-submit {
-        background: #14b8a6;
-        color: white;
-      }
-      .quickcrm-submit:hover {
-        background: #0d9488;
-      }
-    `,
-    dark: `
-      .quickcrm-form {
-        background: #1f2937;
-        color: #fff;
-      }
-      .quickcrm-form input,
-      .quickcrm-form textarea {
-        border: 1px solid #4b5563;
-        background: #374151;
-        color: #fff;
-      }
-      .quickcrm-form label {
-        color: #9ca3af;
-      }
-      .quickcrm-submit {
-        background: #14b8a6;
-        color: white;
-      }
-      .quickcrm-submit:hover {
-        background: #0d9488;
-      }
-    `,
-    minimal: `
-      .quickcrm-minimal input,
-      .quickcrm-minimal textarea {
-        border: none;
-        border-bottom: 2px solid #e5e7eb;
-        border-radius: 0;
-        padding: 8px 0;
-      }
-      .quickcrm-minimal input:focus,
-      .quickcrm-minimal textarea:focus {
-        border-bottom-color: #14b8a6;
-        outline: none;
-      }
-    `,
-    modern: `
-      .quickcrm-modern {
-        background: #fff;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-      }
-      .quickcrm-modern h3 {
-        text-align: center;
-        margin-bottom: 1.5rem;
-      }
-      .quickcrm-form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-      }
-      .quickcrm-modern .quickcrm-form-group {
-        position: relative;
-      }
-      .quickcrm-modern input,
-      .quickcrm-modern textarea {
-        border: 2px solid #e5e7eb;
-        transition: border-color 0.2s;
-      }
-      .quickcrm-modern input:focus,
-      .quickcrm-modern textarea:focus {
-        border-color: #14b8a6;
-        outline: none;
-      }
-      .quickcrm-modern label {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: white;
-        padding: 0 4px;
-        transition: all 0.2s;
-      }
-      .quickcrm-modern input:focus + label,
-      .quickcrm-modern input:not(:placeholder-shown) + label {
-        top: 0;
-        font-size: 12px;
-        color: #14b8a6;
-      }
-    `,
-    classic: `
-      .quickcrm-classic {
-        background: #f9fafb;
-        border: 1px solid #e5e7eb;
-        border-radius: 6px;
-      }
-      .quickcrm-classic .quickcrm-header {
-        text-align: center;
-        margin-bottom: 2rem;
-      }
-      .quickcrm-classic h3 {
-        margin: 0 0 0.5rem;
-        color: #111827;
-      }
-      .quickcrm-classic p {
-        color: #6b7280;
-        font-size: 14px;
-      }
-      .quickcrm-classic label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-      }
-      .quickcrm-classic input,
-      .quickcrm-classic textarea {
-        border: 1px solid #d1d5db;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-      }
-    `
+    light: {
+      background: '#ffffff',
+      text: '#111827',
+      border: '#e5e7eb'
+    },
+    dark: {
+      background: '#111827',
+      text: '#ffffff',
+      border: '#374151'
+    }
   };
 
-  // Initialize the form
-  function initLeadForm(config) {
-    // Merge config with defaults
-    config = { ...defaultConfig, ...config };
-
-    if (!config.apiKey) {
-      console.error('QuickCRM: API key is required');
-      return;
+  // Template styles
+  const templates = {
+    default: {
+      spacing: '1rem',
+      buttonStyle: ''
+    },
+    minimal: {
+      spacing: '1rem',
+      buttonStyle: 'width: 100%;'
+    },
+    modern: {
+      spacing: '1.5rem',
+      buttonStyle: 'border-radius: 9999px; padding-left: 2rem; padding-right: 2rem;'
+    },
+    classic: {
+      spacing: '1.25rem',
+      buttonStyle: ''
     }
+  };
 
-    // Get container element
-    const container = document.getElementById('quickcrm-lead-form');
-    if (!container) {
-      console.error('QuickCRM: Container element not found');
-      return;
-    }
+  // Create form container
+  function createFormContainer(config) {
+    const container = document.createElement('div');
+    container.className = 'quickcrm-form-container';
+    container.style.padding = '1.5rem';
+    container.style.borderRadius = '0.5rem';
+    container.style.backgroundColor = styles[config.theme]?.background || styles.light.background;
+    container.style.color = styles[config.theme]?.text || styles.light.text;
+    container.style.border = `1px solid ${styles[config.theme]?.border || styles.light.border}`;
 
-    // Add styles
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = styles.base + styles[config.theme];
-    if (templates[config.template]) {
-      styleSheet.textContent += styles[config.template];
-    }
-    document.head.appendChild(styleSheet);
+    // Add logo
+    const logoUrl = config.style?.logoUrl || DEFAULT_CONFIG.logoUrl;
+    if (logoUrl) {
+      const logoContainer = document.createElement('div');
+      logoContainer.style.display = 'flex';
+      logoContainer.style.justifyContent = 'center';
+      logoContainer.style.marginBottom = '1.5rem';
 
-    // Insert form template
-    container.innerHTML = templates[config.template] || templates.default;
-
-    // Add form submission handler
-    const form = container.querySelector('form');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
-
-      try {
-        // Submit to QuickCRM API
-        const response = await fetch('https://api.quickcrm.com/v1/leads', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${config.apiKey}`
-          },
-          body: JSON.stringify(data)
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to submit form');
+      const logo = document.createElement('img');
+      logo.src = logoUrl;
+      logo.alt = 'Form Logo';
+      logo.style.maxHeight = '4rem';
+      logo.style.objectFit = 'contain';
+      logo.onerror = () => {
+        // If custom logo fails to load, try loading default logo
+        if (logoUrl !== DEFAULT_CONFIG.logoUrl) {
+          logo.src = DEFAULT_CONFIG.logoUrl;
+          logo.onerror = () => {
+            logoContainer.style.display = 'none';
+          };
+        } else {
+          logoContainer.style.display = 'none';
         }
+      };
 
-        const result = await response.json();
+      logoContainer.appendChild(logo);
+      container.appendChild(logoContainer);
+    }
 
-        // Call onSubmit callback if provided
-        if (typeof config.onSubmit === 'function') {
-          config.onSubmit(result);
-        }
+    // Add form title and description
+    const titleContainer = document.createElement('div');
+    titleContainer.style.textAlign = 'center';
+    titleContainer.style.marginBottom = '1.5rem';
 
-        // Show success message
-        form.innerHTML = `
-          <div style="text-align: center; padding: 2rem;">
-            <h3 style="color: #059669; margin-bottom: 1rem;">Thank you!</h3>
-            <p style="color: #6b7280;">Your message has been received. We'll get back to you shortly.</p>
-          </div>
-        `;
-      } catch (error) {
-        console.error('QuickCRM:', error);
-        // Show error message
-        const submitButton = form.querySelector('.quickcrm-submit');
-        submitButton.style.backgroundColor = '#ef4444';
-        submitButton.textContent = 'Error submitting form';
-      }
-    });
+    const title = document.createElement('h2');
+    title.textContent = config.config?.title || DEFAULT_CONFIG.title;
+    title.style.fontSize = '1.25rem';
+    title.style.fontWeight = '600';
+    title.style.marginBottom = '0.5rem';
+
+    const description = document.createElement('p');
+    description.textContent = config.config?.description || DEFAULT_CONFIG.description;
+    description.style.color = styles[config.theme]?.text === '#ffffff' ? '#e5e7eb' : '#4b5563';
+
+    titleContainer.appendChild(title);
+    titleContainer.appendChild(description);
+    container.appendChild(titleContainer);
+
+    return container;
   }
 
-  // Expose to global scope
-  window.QuickCRM = {
-    initLeadForm
+  // Create form field element
+  function createField(field) {
+    const wrapper = document.createElement('div');
+    wrapper.style.marginBottom = '1rem';
+
+    const label = document.createElement('label');
+    label.textContent = field.label;
+    if (field.required) {
+      const required = document.createElement('span');
+      required.textContent = '*';
+      required.style.color = '#ef4444';
+      required.style.marginLeft = '0.25rem';
+      label.appendChild(required);
+    }
+    wrapper.appendChild(label);
+
+    let input;
+    switch (field.type) {
+      case 'text':
+      case 'email':
+      case 'phone':
+      case 'date':
+        input = document.createElement('input');
+        input.type = field.type;
+        input.placeholder = field.placeholder || '';
+        input.required = field.required;
+        input.style.width = '100%';
+        input.style.padding = '0.5rem';
+        input.style.marginTop = '0.25rem';
+        input.style.borderRadius = '0.375rem';
+        break;
+
+      case 'textarea':
+        input = document.createElement('textarea');
+        input.placeholder = field.placeholder || '';
+        input.required = field.required;
+        input.style.width = '100%';
+        input.style.padding = '0.5rem';
+        input.style.marginTop = '0.25rem';
+        input.style.minHeight = '100px';
+        input.style.borderRadius = '0.375rem';
+        break;
+
+      case 'select':
+      case 'multiselect':
+        input = document.createElement('select');
+        input.required = field.required;
+        input.multiple = field.type === 'multiselect';
+        if (field.type === 'multiselect') {
+          input.size = Math.min(field.options?.length || 4, 4);
+        }
+        input.style.width = '100%';
+        input.style.padding = '0.5rem';
+        input.style.marginTop = '0.25rem';
+        input.style.borderRadius = '0.375rem';
+
+        if (!field.isMultiple) {
+          const defaultOption = document.createElement('option');
+          defaultOption.value = '';
+          defaultOption.textContent = 'Select an option';
+          input.appendChild(defaultOption);
+        }
+
+        field.options?.forEach(option => {
+          const optionEl = document.createElement('option');
+          optionEl.value = option;
+          optionEl.textContent = option;
+          input.appendChild(optionEl);
+        });
+        break;
+
+      case 'checkbox':
+        const checkboxWrapper = document.createElement('div');
+        checkboxWrapper.style.display = 'flex';
+        checkboxWrapper.style.alignItems = 'center';
+        checkboxWrapper.style.marginTop = '0.25rem';
+
+        input = document.createElement('input');
+        input.type = 'checkbox';
+        input.required = field.required;
+        input.style.marginRight = '0.5rem';
+
+        const span = document.createElement('span');
+        span.textContent = field.placeholder || field.label;
+        span.style.fontSize = '0.875rem';
+
+        checkboxWrapper.appendChild(input);
+        checkboxWrapper.appendChild(span);
+        wrapper.appendChild(checkboxWrapper);
+        return wrapper;
+
+      case 'checkboxes':
+        const checkboxesWrapper = document.createElement('div');
+        checkboxesWrapper.style.display = 'flex';
+        checkboxesWrapper.style.flexDirection = 'column';
+        checkboxesWrapper.style.gap = '0.5rem';
+        checkboxesWrapper.style.marginTop = '0.25rem';
+
+        field.options?.forEach(option => {
+          const optionWrapper = document.createElement('div');
+          optionWrapper.style.display = 'flex';
+          optionWrapper.style.alignItems = 'center';
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.name = field.id;
+          checkbox.value = option;
+          checkbox.style.marginRight = '0.5rem';
+
+          const optionLabel = document.createElement('span');
+          optionLabel.textContent = option;
+          optionLabel.style.fontSize = '0.875rem';
+
+          optionWrapper.appendChild(checkbox);
+          optionWrapper.appendChild(optionLabel);
+          checkboxesWrapper.appendChild(optionWrapper);
+        });
+
+        wrapper.appendChild(checkboxesWrapper);
+        return wrapper;
+
+      case 'toggle':
+        const toggleWrapper = document.createElement('div');
+        toggleWrapper.style.display = 'flex';
+        toggleWrapper.style.alignItems = 'center';
+        toggleWrapper.style.marginTop = '0.25rem';
+
+        const toggleContainer = document.createElement('div');
+        toggleContainer.style.position = 'relative';
+        toggleContainer.style.width = '2.5rem';
+        toggleContainer.style.marginRight = '0.5rem';
+
+        input = document.createElement('input');
+        input.type = 'checkbox';
+        input.required = field.required;
+        input.style.position = 'absolute';
+        input.style.width = '1.5rem';
+        input.style.height = '1.5rem';
+        input.style.backgroundColor = '#ffffff';
+        input.style.borderRadius = '9999px';
+        input.style.transition = 'all 0.2s';
+        input.style.cursor = 'pointer';
+        input.style.border = '4px solid #ffffff';
+
+        const toggleLabel = document.createElement('label');
+        toggleLabel.style.display = 'block';
+        toggleLabel.style.overflow = 'hidden';
+        toggleLabel.style.height = '1.5rem';
+        toggleLabel.style.borderRadius = '9999px';
+        toggleLabel.style.backgroundColor = '#d1d5db';
+        toggleLabel.style.cursor = 'pointer';
+        toggleLabel.style.transition = 'background-color 0.2s';
+
+        toggleContainer.appendChild(input);
+        toggleContainer.appendChild(toggleLabel);
+
+        const toggleText = document.createElement('span');
+        toggleText.textContent = field.placeholder || field.label;
+        toggleText.style.fontSize = '0.875rem';
+
+        toggleWrapper.appendChild(toggleContainer);
+        toggleWrapper.appendChild(toggleText);
+        wrapper.appendChild(toggleWrapper);
+        return wrapper;
+
+      case 'rating':
+        const ratingWrapper = document.createElement('div');
+        ratingWrapper.style.display = 'flex';
+        ratingWrapper.style.alignItems = 'center';
+        ratingWrapper.style.marginTop = '0.25rem';
+        ratingWrapper.style.gap = '0.25rem';
+
+        for (let i = 1; i <= 5; i++) {
+          const star = document.createElement('button');
+          star.type = 'button';
+          star.textContent = '★';
+          star.style.color = '#d1d5db';
+          star.style.cursor = 'pointer';
+          star.style.transition = 'color 0.2s';
+          star.addEventListener('mouseover', () => {
+            star.style.color = '#fbbf24';
+          });
+          star.addEventListener('mouseout', () => {
+            if (!star.classList.contains('selected')) {
+              star.style.color = '#d1d5db';
+            }
+          });
+          star.addEventListener('click', () => {
+            const stars = ratingWrapper.querySelectorAll('button');
+            stars.forEach((s, index) => {
+              if (index <= Array.from(stars).indexOf(star)) {
+                s.style.color = '#fbbf24';
+                s.classList.add('selected');
+              } else {
+                s.style.color = '#d1d5db';
+                s.classList.remove('selected');
+              }
+            });
+          });
+          ratingWrapper.appendChild(star);
+        }
+
+        wrapper.appendChild(ratingWrapper);
+        return wrapper;
+    }
+
+    if (input) {
+      input.name = field.id;
+      input.style.border = '1px solid #e5e7eb';
+      wrapper.appendChild(input);
+    }
+
+    return wrapper;
+  }
+
+  // Initialize form
+  window.QuickCRM.initLeadForm = function(config) {
+    const container = document.getElementById('quickcrm-lead-form');
+    if (!container) return;
+
+    // Merge default config with provided config
+    config.style = {
+      ...DEFAULT_CONFIG,
+      ...config.style
+    };
+
+    config.config = {
+      type: config.config?.type || DEFAULT_CONFIG.type,
+      title: config.config?.title || DEFAULT_CONFIG.title,
+      description: config.config?.description || DEFAULT_CONFIG.description
+    };
+
+    const form = document.createElement('form');
+    form.className = 'quickcrm-form';
+    form.style.display = 'flex';
+    form.style.flexDirection = 'column';
+    form.style.gap = templates[config.template]?.spacing || templates.default.spacing;
+
+    const formContainer = createFormContainer(config);
+    formContainer.appendChild(form);
+    container.appendChild(formContainer);
+
+    // Add fields
+    config.fields.forEach(field => {
+      form.appendChild(createField(field));
+    });
+
+    // Add submit button
+    const submitButton = document.createElement('button');
+    submitButton.type = 'submit';
+    submitButton.textContent = 'Submit';
+    submitButton.style.padding = '0.5rem 1rem';
+    submitButton.style.marginTop = '1rem';
+    submitButton.style.borderRadius = '0.375rem';
+    submitButton.style.backgroundColor = config.style.buttonColor;
+    submitButton.style.color = '#ffffff';
+    submitButton.style.border = 'none';
+    submitButton.style.cursor = 'pointer';
+    submitButton.style.transition = 'background-color 0.2s';
+    
+    // Add template-specific button styles
+    if (templates[config.template]?.buttonStyle) {
+      Object.assign(submitButton.style, templates[config.template].buttonStyle);
+    }
+
+    // Add hover effect
+    submitButton.addEventListener('mouseenter', () => {
+      submitButton.style.backgroundColor = config.style.buttonColor + 'dd';
+    });
+    submitButton.addEventListener('mouseleave', () => {
+      submitButton.style.backgroundColor = config.style.buttonColor;
+    });
+
+    form.appendChild(submitButton);
+
+    // Handle form submission
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = {
+        formType: config.config.type,
+        fields: {}
+      };
+      
+      config.fields.forEach(field => {
+        if (field.type === 'checkboxes') {
+          data.fields[field.id] = Array.from(formData.getAll(field.id));
+        } else if (field.type === 'multiselect') {
+          data.fields[field.id] = Array.from(form.querySelector(`select[name="${field.id}"]`).selectedOptions).map(opt => opt.value);
+        } else {
+          data.fields[field.id] = formData.get(field.id);
+        }
+      });
+
+      if (typeof config.onSubmit === 'function') {
+        config.onSubmit(data);
+      }
+    });
   };
 })(); 

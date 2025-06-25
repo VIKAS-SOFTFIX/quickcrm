@@ -2,7 +2,7 @@
 
 import { AppLayout } from "@/components/layout/app-layout";
 
-export default function LeadsLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;

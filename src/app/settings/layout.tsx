@@ -1,7 +1,6 @@
 "use client";
 
 import { AppLayout } from "@/components/layout/app-layout";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter, usePathname } from "next/navigation";
 import {
   Settings,
@@ -12,70 +11,152 @@ import {
   Lock,
   Code,
   Mail,
-  CreditCard,
-  Users
+  FileText,
+  Languages,
+  Clock,
+  Smartphone,
+  Search,
+  MessageSquare,
+  Globe,
+  BarChart3,
+  Share2,
+  Megaphone
 } from "lucide-react";
 
-const settingsTabs = [
+// Organized settings tabs into groups
+const settingsGroups = [
   {
-    value: "general",
-    label: "General",
-    icon: Settings,
-    href: "/settings"
+    title: "Account",
+    items: [
+      {
+        value: "general",
+        label: "General",
+        icon: Settings,
+        href: "/settings"
+      },
+      {
+        value: "profile",
+        label: "Profile",
+        icon: UserCircle,
+        href: "/coming-soon"
+      },
+      {
+        value: "company",
+        label: "Company",
+        icon: Building2,
+        href: "/coming-soon"
+      },
+      {
+        value: "security",
+        label: "Security",
+        icon: Lock,
+        href: "/coming-soon"
+      }
+    ]
   },
   {
-    value: "profile",
-    label: "Profile",
-    icon: UserCircle,
-    href: "/settings/profile"
+    title: "Marketing",
+    items: [
+      {
+        value: "whatsapp-marketing",
+        label: "WhatsApp",
+        icon: MessageSquare,
+        href: "/coming-soon"
+      },
+      {
+        value: "email-marketing",
+        label: "Email",
+        icon: Mail,
+        href: "/coming-soon"
+      },
+      {
+        value: "sms-marketing",
+        label: "SMS",
+        icon: Megaphone,
+        href: "/coming-soon"
+      }
+    ]
   },
   {
-    value: "company",
-    label: "Company",
-    icon: Building2,
-    href: "/settings/company"
+    title: "Advertising",
+    items: [
+      {
+        value: "google-ads",
+        label: "Google Ads",
+        icon: BarChart3,
+        href: "/coming-soon"
+      },
+      {
+        value: "meta-ads",
+        label: "Meta Ads",
+        icon: Share2,
+        href: "/coming-soon"
+      }
+    ]
   },
   {
-    value: "appearance",
-    label: "Appearance",
-    icon: Palette,
-    href: "/settings/appearance"
+    title: "SEO",
+    items: [
+      {
+        value: "google-business",
+        label: "Google Business",
+        icon: Globe,
+        href: "/coming-soon"
+      },
+      {
+        value: "seo-tools",
+        label: "SEO Tools",
+        icon: Search,
+        href: "/coming-soon"
+      }
+    ]
   },
   {
-    value: "notifications",
-    label: "Notifications",
-    icon: Bell,
-    href: "/settings/notifications"
-  },
-  {
-    value: "security",
-    label: "Security",
-    icon: Lock,
-    href: "/settings/security"
-  },
-  {
-    value: "integrations",
-    label: "Integrations",
-    icon: Code,
-    href: "/settings/integrations"
-  },
-  {
-    value: "email",
-    label: "Email",
-    icon: Mail,
-    href: "/settings/email"
-  },
-  {
-    value: "billing",
-    label: "Billing",
-    icon: CreditCard,
-    href: "/settings/billing"
-  },
-  {
-    value: "team",
-    label: "Team",
-    icon: Users,
-    href: "/settings/team"
+    title: "System",
+    items: [
+      {
+        value: "integrations",
+        label: "Integrations",
+        icon: Code,
+        href: "/settings/integrations"
+      },
+      {
+        value: "appearance",
+        label: "Appearance",
+        icon: Palette,
+        href: "/coming-soon"
+      },
+      {
+        value: "notifications",
+        label: "Notifications",
+        icon: Bell,
+        href: "/coming-soon"
+      },
+      {
+        value: "language",
+        label: "Language",
+        icon: Languages,
+        href: "/coming-soon"
+      },
+      {
+        value: "timezone",
+        label: "Time Zone",
+        icon: Clock,
+        href: "/coming-soon"
+      },
+      {
+        value: "devices",
+        label: "Connected Devices",
+        icon: Smartphone,
+        href: "/coming-soon"
+      },
+      {
+        value: "documents",
+        label: "Documents",
+        icon: FileText,
+        href: "/coming-soon"
+      }
+    ]
   }
 ];
 
@@ -86,43 +167,51 @@ export default function SettingsLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const currentTab = settingsTabs.find(tab => tab.href === pathname)?.value || "general";
 
   return (
     <AppLayout>
       <div className="container mx-auto py-6">
         <div className="flex flex-col space-y-8">
-          <div>
-            <h1 className="text-2xl font-bold">Settings</h1>
-            <p className="text-gray-500">Manage your account settings and preferences</p>
-          </div>
-
+        
           <div className="flex flex-col md:flex-row gap-8">
-            {/* Navigation */}
-            <div className="w-full md:w-64 shrink-0">
-              <nav className="space-y-1">
-                {settingsTabs.map((tab) => {
-                  const Icon = tab.icon;
-                  const isActive = pathname === tab.href;
-                  
-                  return (
-                    <button
-                      key={tab.value}
-                      onClick={() => router.push(tab.href)}
-                      className={`flex items-center w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                        isActive
-                          ? "bg-teal-50 text-teal-700"
-                          : "text-gray-700 hover:bg-gray-50"
-                      }`}
-                    >
-                      <Icon className={`mr-3 h-5 w-5 ${
-                        isActive ? "text-teal-500" : "text-gray-400"
-                      }`} />
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </nav>
+            {/* Navigation - Now with sticky positioning and scrolling */}
+            <div className="w-full md:w-48 shrink-0">
+              <div className="md:sticky md:top-20 md:max-h-[calc(100vh-120px)] md:overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 pr-2">
+              <div>
+            <h1 className="text-2xl font-bold">Settings</h1>
+            {/* <p className="text-gray-500">Manage your account settings and preferences</p> */}
+          </div>
+                <nav className="mt-6 space-y-6 pb-4">
+                  {settingsGroups.map((group) => (
+                    <div key={group.title} className="space-y-1">
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-2">
+                        {group.title}
+                      </p>
+                      {group.items.map((tab) => {
+                        const Icon = tab.icon;
+                        const isActive = pathname === tab.href;
+                        
+                        return (
+                          <button
+                            key={tab.value}
+                            onClick={() => router.push(tab.href)}
+                            className={`flex items-center w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                              isActive
+                                ? "bg-teal-50 text-teal-700"
+                                : "text-gray-700 hover:bg-gray-50"
+                            }`}
+                          >
+                            <Icon className={`mr-3 h-4 w-4 ${
+                              isActive ? "text-teal-500" : "text-gray-400"
+                            }`} />
+                            {tab.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </nav>
+              </div>
             </div>
 
             {/* Content */}
