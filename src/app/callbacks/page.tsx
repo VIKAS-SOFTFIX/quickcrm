@@ -2,73 +2,95 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { PlusCircle, Search, Filter, Users, UserCheck, Star, Tag } from "lucide-react";
+import { PlusCircle, Search, Filter, PhoneCall, Users, UserCheck, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { LeadsTable } from "@/components/leads/leads-table";
-import { LeadsTabs } from "@/components/leads/leads-tabs";
-import { LeadDetailSheet } from "@/components/leads/lead-detail-sheet";
-import { LeadFormSheet } from "@/components/leads/lead-form-sheet";
-import { useLeads, Lead } from "@/hooks/useLeads";
+import { CallbackRequestsTable } from "@/components/callback-requests/callback-requests-table";
+import { CallbackRequestsTabs } from "@/components/callback-requests/callback-requests-tabs";
+import { CallbackDetailSheet } from "@/components/callback-requests/callback-detail-sheet";
+import { CallbackFormSheet } from "@/components/callback-requests/callback-form-sheet";
 import { ContentLoader } from "@/components/ui/loader";
 import { useLoading } from "@/components/layout/loading-provider";
 
-export default function LeadsPage() {
+// Simplified callback request interface
+interface CallbackRequest {
+  id: string;
+  mobileNumber: string;
+  assignedTo: string;
+  status: string;
+}
+
+// Mock data for callback purposes
+const mockCallbackRequests: CallbackRequest[] = [
+  {
+    id: "1",
+    mobileNumber: "6370102556",
+    assignedTo: "Vikas Kumar",
+    status: "pending"
+  },
+  {
+    id: "2",
+    mobileNumber: "9876543210",
+    assignedTo: "Rahul Sharma",
+    status: "completed"
+  },
+  {
+    id: "3",
+    mobileNumber: "8765432109",
+    assignedTo: "",
+    status: "pending"
+  }
+];
+
+export default function CallbackRequestsPage() {
   const router = useRouter();
   const { startApiRequest, endApiRequest } = useLoading();
-  const { 
-    leads, 
-    loading, 
-    totalLeads, 
-    currentPage, 
-    setCurrentPage, 
-    totalPages,
-    searchQuery,
-    setSearchQuery
-  } = useLeads();
   
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [callbackRequests, setCallbackRequests] = useState<CallbackRequest[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCallback, setSelectedCallback] = useState<CallbackRequest | null>(null);
   const [isDetailSheetOpen, setIsDetailSheetOpen] = useState(false);
   const [isFormSheetOpen, setIsFormSheetOpen] = useState(false);
-  const [editingLead, setEditingLead] = useState<Lead | null>(null);
+  const [editingCallback, setEditingCallback] = useState<CallbackRequest | null>(null);
   
-  // Show API loading state when fetching leads
+  // Load callback requests (simulated)
   useEffect(() => {
-    if (loading) {
-      startApiRequest();
-    } else {
+    startApiRequest();
+    // Simulate API call
+    setTimeout(() => {
+      setCallbackRequests(mockCallbackRequests);
+      setLoading(false);
       endApiRequest();
-    }
+    }, 1000);
     
     return () => {
       endApiRequest();
     };
-  }, [loading, startApiRequest, endApiRequest]);
+  }, [startApiRequest, endApiRequest]);
   
-  const handleViewLead = (lead: Lead) => {
-    setSelectedLead(lead);
+  const handleViewCallback = (callback: CallbackRequest) => {
+    setSelectedCallback(callback);
     setIsDetailSheetOpen(true);
   };
   
-  const handleAddLead = () => {
-    setEditingLead(null);
+  const handleAddCallback = () => {
+    setEditingCallback(null);
     setIsFormSheetOpen(true);
   };
   
-  const handleEditLead = (lead: Lead) => {
-    setEditingLead(lead);
+  const handleEditCallback = (callback: CallbackRequest) => {
+    setEditingCallback(callback);
     setIsFormSheetOpen(true);
     setIsDetailSheetOpen(false);
   };
   
-  const handleDeleteLead = (id: string) => {
-    // In a real app, you would call an API to delete the lead
-    // For now, we'll just close the sheet
+  const handleDeleteCallback = (id: string) => {
+    // In a real app, you would call an API to delete the callback request
     setIsDetailSheetOpen(false);
   };
   
-  const handleSaveLead = (leadData: Partial<Lead>) => {
-    // In a real app, you would call an API to save the lead
-    // For now, we'll just close the sheet
+  const handleSaveCallback = (callbackData: Partial<CallbackRequest>) => {
+    // In a real app, you would call an API to save the callback request
     setIsFormSheetOpen(false);
   };
   
@@ -76,18 +98,24 @@ export default function LeadsPage() {
     setSearchQuery(e.target.value);
   };
   
-  // Calculate stats
-  const qualifiedLeads = leads.filter(lead => 
-    lead.status === "Qualified" || lead.status === "Proposal" || lead.status === "Negotiation"
-  ).length;
+  // Filter callback requests based on search
+  const filteredCallbackRequests = callbackRequests.filter(callback => 
+    callback.mobileNumber.includes(searchQuery) ||
+    callback.assignedTo.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   
-  const wonLeads = leads.filter(lead => 
-    lead.status === "Won"
+  // Calculate stats
+  const totalCallbacks = callbackRequests.length;
+  const assignedCallbacks = callbackRequests.filter(callback => 
+    callback.assignedTo !== ""
+  ).length;
+  const pendingCallbacks = callbackRequests.filter(callback => 
+    callback.status === "pending"
   ).length;
   
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Leads</h1>
+      <h1 className="text-2xl font-bold mb-4">Callback Requests</h1>
       
       <div className="flex flex-col gap-4">
         {/* Stats cards row */}
@@ -97,7 +125,7 @@ export default function LeadsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-500">Total</p>
-                  <p className="text-3xl font-bold text-gray-800 mt-1">{totalLeads}</p>
+                  <p className="text-3xl font-bold text-gray-800 mt-1">{totalCallbacks}</p>
                 </div>
                 <div className="bg-teal-50 p-3 rounded-lg">
                   <Users className="h-6 w-6 text-teal-500" />
@@ -106,8 +134,8 @@ export default function LeadsPage() {
               <div className="mt-4 pt-3 border-t border-gray-50">
                 <p className="text-xs text-gray-500 flex items-center">
                   <span className="flex items-center text-teal-500 mr-1">
-                    <Tag className="h-3 w-3 mr-1" />
-                    All leads
+                    <Clock className="h-3 w-3 mr-1" />
+                    All callbacks
                   </span>
                 </p>
               </div>
@@ -118,8 +146,8 @@ export default function LeadsPage() {
             <div className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Qualified</p>
-                  <p className="text-3xl font-bold text-gray-800 mt-1">{qualifiedLeads}</p>
+                  <p className="text-sm font-medium text-gray-500">Assigned</p>
+                  <p className="text-3xl font-bold text-gray-800 mt-1">{assignedCallbacks}</p>
                 </div>
                 <div className="bg-blue-50 p-3 rounded-lg">
                   <UserCheck className="h-6 w-6 text-blue-500" />
@@ -129,29 +157,29 @@ export default function LeadsPage() {
                 <p className="text-xs text-gray-500 flex items-center">
                   <span className="flex items-center text-blue-500 mr-1">
                     <UserCheck className="h-3 w-3 mr-1" />
-                    Active pipeline
+                    Assigned callbacks
                   </span>
                 </p>
               </div>
             </div>
           </div>
           
-          <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all hover:shadow-lg hover:border-green-100">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all hover:shadow-lg hover:border-orange-100">
             <div className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Won</p>
-                  <p className="text-3xl font-bold text-gray-800 mt-1">{wonLeads}</p>
+                  <p className="text-sm font-medium text-gray-500">Pending</p>
+                  <p className="text-3xl font-bold text-gray-800 mt-1">{pendingCallbacks}</p>
                 </div>
-                <div className="bg-green-50 p-3 rounded-lg">
-                  <Star className="h-6 w-6 text-green-500" />
+                <div className="bg-orange-50 p-3 rounded-lg">
+                  <PhoneCall className="h-6 w-6 text-orange-500" />
                 </div>
               </div>
               <div className="mt-4 pt-3 border-t border-gray-50">
                 <p className="text-xs text-gray-500 flex items-center">
-                  <span className="flex items-center text-green-500 mr-1">
-                    <Star className="h-3 w-3 mr-1" />
-                    Converted leads
+                  <span className="flex items-center text-orange-500 mr-1">
+                    <PhoneCall className="h-3 w-3 mr-1" />
+                    Waiting for callback
                   </span>
                 </p>
               </div>
@@ -165,7 +193,7 @@ export default function LeadsPage() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <input
               type="text"
-              placeholder="Search by name, company, email..."
+              placeholder="Search by mobile number or agent..."
               value={searchQuery}
               onChange={handleSearch}
               className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent w-64"
@@ -178,39 +206,39 @@ export default function LeadsPage() {
               Filter
             </Button>
             
-            <Button onClick={handleAddLead} className="flex items-center">
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add Lead
+            <Button onClick={handleAddCallback} className="flex items-center">
+              <PhoneCall className="mr-2 h-4 w-4" />
+              Add Callback
             </Button>
           </div>
         </div>
       </div>
       
-      <LeadsTabs />
+      <CallbackRequestsTabs />
       
       <div className="mt-6">
-        <LeadsTable 
-          leads={leads}
-          onView={handleViewLead}
-          onEdit={handleEditLead}
-          onDelete={handleDeleteLead}
+        <CallbackRequestsTable 
+          callbackRequests={filteredCallbackRequests}
+          onView={handleViewCallback}
+          onEdit={handleEditCallback}
+          onDelete={handleDeleteCallback}
           loading={loading}
         />
       </div>
       
-      <LeadDetailSheet
-        lead={selectedLead}
+      <CallbackDetailSheet
+        callbackRequest={selectedCallback}
         isOpen={isDetailSheetOpen}
         onClose={() => setIsDetailSheetOpen(false)}
-        onEdit={handleEditLead}
-        onDelete={handleDeleteLead}
+        onEdit={handleEditCallback}
+        onDelete={handleDeleteCallback}
       />
       
-      <LeadFormSheet
-        lead={editingLead}
+      <CallbackFormSheet
+        callbackRequest={editingCallback}
         isOpen={isFormSheetOpen}
         onClose={() => setIsFormSheetOpen(false)}
-        onSave={handleSaveLead}
+        onSave={handleSaveCallback}
       />
     </div>
   );

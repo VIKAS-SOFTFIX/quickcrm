@@ -15,7 +15,7 @@ const mockTemplates: EmailTemplate[] = [
     name: "Welcome Email",
     subject: "Welcome to QuickCRM!",
     previewText: "Get started with your new account",
-    thumbnail: "https://via.placeholder.com/300x200?text=Welcome+Email",
+    thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
     createdAt: new Date(2023, 3, 15),
     updatedAt: new Date(2023, 5, 20),
     category: "Onboarding",
@@ -26,7 +26,7 @@ const mockTemplates: EmailTemplate[] = [
     name: "Monthly Newsletter",
     subject: "Your Monthly Update from QuickCRM",
     previewText: "See what's new this month",
-    thumbnail: "https://via.placeholder.com/300x200?text=Newsletter",
+    thumbnail: "https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
     createdAt: new Date(2023, 2, 10),
     updatedAt: new Date(2023, 6, 5),
     category: "Newsletter"
@@ -36,7 +36,7 @@ const mockTemplates: EmailTemplate[] = [
     name: "Product Announcement",
     subject: "Introducing Our New Feature",
     previewText: "Check out our latest product update",
-    thumbnail: "https://via.placeholder.com/300x200?text=Product+Announcement",
+    thumbnail: "https://images.unsplash.com/photo-1661956602944-249bcd04b63f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
     createdAt: new Date(2023, 4, 22),
     updatedAt: new Date(2023, 4, 22),
     category: "Marketing"
@@ -46,7 +46,7 @@ const mockTemplates: EmailTemplate[] = [
     name: "Feedback Request",
     subject: "We'd Love Your Feedback",
     previewText: "Help us improve our service",
-    thumbnail: "https://via.placeholder.com/300x200?text=Feedback",
+    thumbnail: "https://images.unsplash.com/photo-1423784346385-c1d4dac9893a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
     createdAt: new Date(2023, 1, 5),
     updatedAt: new Date(2023, 5, 12),
     category: "Engagement"
@@ -56,7 +56,7 @@ const mockTemplates: EmailTemplate[] = [
     name: "Special Offer",
     subject: "Limited Time Offer Just for You",
     previewText: "Don't miss out on this special deal",
-    thumbnail: "https://via.placeholder.com/300x200?text=Special+Offer",
+    thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
     createdAt: new Date(2023, 5, 1),
     updatedAt: new Date(2023, 5, 1),
     category: "Marketing"

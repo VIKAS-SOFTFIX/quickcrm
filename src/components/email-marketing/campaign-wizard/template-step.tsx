@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, Loader2 } from "lucide-react";
 import { EmailTemplate } from "../email-template-card";
+import { Button } from "@/components/ui/button";
 
 interface TemplateStepProps {
   templates: EmailTemplate[];
@@ -25,6 +26,9 @@ export function TemplateStep({
 }: TemplateStepProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<string | null>(null);
+  const [isCreatingTemplate, setIsCreatingTemplate] = useState(false);
+  const [newTemplateName, setNewTemplateName] = useState("");
+  const [newTemplateCategory, setNewTemplateCategory] = useState("Marketing");
   
   // Get unique categories
   const categories = Array.from(new Set(templates.map(t => t.category)));
@@ -39,6 +43,45 @@ export function TemplateStep({
     
     return matchesSearch && matchesFilter;
   });
+
+  const handleCreateTemplate = () => {
+    if (!isCreatingTemplate) {
+      setIsCreatingTemplate(true);
+      return;
+    }
+
+    if (!newTemplateName.trim()) {
+      return;
+    }
+
+    // Generate a random Unsplash image related to business/email
+    const unsplashKeywords = [
+      "business", "email", "marketing", "office", "computer", 
+      "technology", "digital", "communication", "professional"
+    ];
+    const randomKeyword = unsplashKeywords[Math.floor(Math.random() * unsplashKeywords.length)];
+    const randomNumber = Math.floor(Math.random() * 10) + 1;
+    const imageUrl = `https://source.unsplash.com/featured/?${randomKeyword}&sig=${randomNumber}`;
+
+    // Create new template
+    const newTemplate: EmailTemplate = {
+      id: `new-template-${Date.now()}`,
+      name: newTemplateName,
+      subject: `${newTemplateName} Subject`,
+      previewText: `Preview text for ${newTemplateName}`,
+      thumbnail: imageUrl,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      category: newTemplateCategory
+    };
+
+    // Select the new template
+    onSelectTemplate(newTemplate);
+    
+    // Reset form
+    setIsCreatingTemplate(false);
+    setNewTemplateName("");
+  };
 
   return (
     <div className="space-y-6">
@@ -107,16 +150,72 @@ export function TemplateStep({
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {/* Create new template card */}
           <div 
-            className="border border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center p-6 h-64 hover:border-teal-500 hover:bg-teal-50 cursor-pointer transition-colors"
-            onClick={() => {}}
+            className={`
+              border border-dashed rounded-lg flex flex-col items-center justify-center p-6 h-64 
+              transition-colors cursor-pointer
+              ${isCreatingTemplate 
+                ? 'border-teal-500 bg-teal-50' 
+                : 'border-gray-300 hover:border-teal-500 hover:bg-teal-50'
+              }
+            `}
+            onClick={handleCreateTemplate}
           >
-            <div className="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center mb-4">
-              <Plus className="h-6 w-6 text-teal-600" />
-            </div>
-            <h3 className="font-medium text-gray-900">Create New Template</h3>
-            <p className="text-sm text-gray-500 text-center mt-2">
-              Design a custom email template from scratch
-            </p>
+            {!isCreatingTemplate ? (
+              <>
+                <div className="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center mb-4">
+                  <Plus className="h-6 w-6 text-teal-600" />
+                </div>
+                <h3 className="font-medium text-gray-900">Create New Template</h3>
+                <p className="text-sm text-gray-500 text-center mt-2">
+                  Design a custom email template from scratch
+                </p>
+              </>
+            ) : (
+              <div className="w-full space-y-4">
+                <h3 className="font-medium text-gray-900 text-center">New Template</h3>
+                
+                <div>
+                  <input
+                    type="text"
+                    value={newTemplateName}
+                    onChange={(e) => setNewTemplateName(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    placeholder="Template name"
+                    autoFocus
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+                
+                <div>
+                  <select
+                    value={newTemplateCategory}
+                    onChange={(e) => setNewTemplateCategory(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {categories.map(category => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="flex justify-center">
+                  <Button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCreateTemplate();
+                    }}
+                    disabled={!newTemplateName.trim()}
+                    className="w-full"
+                    type="button"
+                  >
+                    Create Template
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
           
           {/* Template cards */}
@@ -138,10 +237,11 @@ export function TemplateStep({
                     src={template.thumbnail} 
                     alt={template.name}
                     className="w-full h-full object-cover"
+                    loading="lazy"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
-                    No Preview
+                    <Loader2 className="h-8 w-8 animate-spin" />
                   </div>
                 )}
                 
@@ -167,7 +267,7 @@ export function TemplateStep({
             </div>
           ))}
           
-          {filteredTemplates.length === 0 && (
+          {filteredTemplates.length === 0 && !isCreatingTemplate && (
             <div className="col-span-full py-8 text-center text-gray-500">
               No templates found. Try adjusting your search or filter.
             </div>

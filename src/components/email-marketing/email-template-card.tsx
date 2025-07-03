@@ -1,6 +1,7 @@
 "use client";
 
-import { Edit, Trash2, Copy, Eye } from "lucide-react";
+import { useState } from "react";
+import { Edit, Trash2, Copy, Eye, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface EmailTemplate {
@@ -34,6 +35,17 @@ export function EmailTemplateCard({
   onPreview,
   isSelected = false
 }: EmailTemplateCardProps) {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
     <div 
       className={cn(
@@ -45,15 +57,45 @@ export function EmailTemplateCard({
       onClick={() => onSelect(template)}
     >
       <div className="aspect-video relative overflow-hidden bg-gray-100">
-        {template.thumbnail ? (
-          <img 
-            src={template.thumbnail} 
-            alt={template.name}
-            className="w-full h-full object-cover"
-          />
+        {template.thumbnail && !imageError ? (
+          <>
+            {!imageLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+              </div>
+            )}
+            <img 
+              src={template.thumbnail} 
+              alt={template.name}
+              className={cn(
+                "w-full h-full object-cover transition-opacity duration-300",
+                imageLoaded ? "opacity-100" : "opacity-0"
+              )}
+              loading="lazy"
+              onLoad={handleImageLoad}
+              onError={handleImageError}
+            />
+          </>
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
-            No Preview
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-400 p-4">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="48" 
+              height="48" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="1" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+              className="mb-2"
+            >
+              <rect x="2" y="6" width="20" height="12" rx="2" />
+              <path d="M12 12H2" />
+              <path d="M22 12h-4" />
+              <path d="M12 6v12" />
+            </svg>
+            <span className="text-xs text-center">Template Preview</span>
           </div>
         )}
         

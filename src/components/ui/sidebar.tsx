@@ -35,7 +35,9 @@ import {
   FileText,
   MessageCircle,
   SendHorizontal,
-  Share2
+  Share2,
+  Shield,
+  Lock
 } from "lucide-react";
 import { useSidebar } from "./sidebar-context";
 import { cn } from "@/lib/utils";
@@ -108,7 +110,8 @@ export function Sidebar() {
     communications: true,
     marketing: true,
     seo: true,
-    admin: true,
+    user_management: true,
+    administration: true,
   });
 
   // Check if mobile and handle resize
@@ -221,8 +224,27 @@ export function Sidebar() {
           />
           <SidebarItem href="/coming-soon" icon={<Search size={20} />} label="SEO Analytics" />
 
+          <SidebarSection title="User Management" />
+          <SidebarItem 
+            href="/user-management/users" 
+            icon={<Users size={20} />} 
+            label="Users" 
+            isActive={isPathActive('/user-management/users')}
+          />
+          <SidebarItem 
+            href="/user-management/roles" 
+            icon={<Shield size={20} />} 
+            label="Roles" 
+            isActive={isPathActive('/user-management/roles')}
+          />
+          <SidebarItem 
+            href="/user-management/permissions" 
+            icon={<Lock size={20} />} 
+            label="Permissions" 
+            isActive={isPathActive('/user-management/permissions')}
+          />
+
           <SidebarSection title="Administration" />
-          <SidebarItem href="/users" icon={<Users size={20} />} label="Users" />
           <SidebarItem href="/settings" icon={<Settings size={20} />} label="Settings" />
           <SidebarItem href="/coming-soon" icon={<Ticket size={20} />} label="Support Tickets" />
           <SidebarItem href="/coming-soon" icon={<CreditCard size={20} />} label="Subscription" />
