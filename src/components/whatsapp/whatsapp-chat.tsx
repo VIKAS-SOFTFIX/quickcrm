@@ -9,7 +9,6 @@ import {
   Search, 
   ArrowLeft,
   Send,
-  Image,
   Camera,
   File,
   Check,
@@ -17,6 +16,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import Image from 'next/image';
 
 interface Message {
   id: string;
@@ -115,10 +115,12 @@ export function WhatsAppChat({
           
           <div className="relative">
             <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
-              <img 
+              <Image 
                 src={contact.avatar} 
                 alt={contact.name}
                 className="w-full h-full object-cover"
+                width={40}
+                height={40}
               />
             </div>
             {contact.isOnline && (
@@ -176,10 +178,12 @@ export function WhatsAppChat({
                   <div className="mb-2">
                     {message.media.type === 'image' && (
                       <div className="rounded-lg overflow-hidden">
-                        <img 
+                        <Image 
                           src={message.media.url} 
                           alt="Image" 
                           className="max-w-full"
+                          width={320}
+                          height={240}
                         />
                       </div>
                     )}

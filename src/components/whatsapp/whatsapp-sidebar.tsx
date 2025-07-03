@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Search, MoreVertical, Plus, Filter, Archive } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from 'next/image';
 
 interface Contact {
   id: string;
@@ -98,10 +99,12 @@ export function WhatsAppSidebar({
               >
                 <div className="relative">
                   <div className="w-12 h-12 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden">
-                    <img 
+                    <Image 
                       src={contact.avatar} 
                       alt={contact.name}
                       className="w-full h-full object-cover"
+                      width={48}
+                      height={48}
                     />
                   </div>
                   {contact.isOnline && (

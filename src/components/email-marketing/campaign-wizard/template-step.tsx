@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Search, Plus, Loader2 } from "lucide-react";
 import { EmailTemplate } from "../email-template-card";
 import { Button } from "@/components/ui/button";
+import Image from 'next/image';
 
 interface TemplateStepProps {
   templates: EmailTemplate[];
@@ -233,11 +234,14 @@ export function TemplateStep({
             >
               <div className="aspect-video relative overflow-hidden bg-gray-100">
                 {template.thumbnail ? (
-                  <img 
+                  <Image 
                     src={template.thumbnail} 
                     alt={template.name}
                     className="w-full h-full object-cover"
                     loading="lazy"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    style={{ objectFit: 'cover' }}
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">

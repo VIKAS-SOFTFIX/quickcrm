@@ -34,6 +34,7 @@ import {
   MessageSquare,
   Building2
 } from "lucide-react";
+import Image from 'next/image';
 
 export interface FormField {
   id: string;
@@ -263,10 +264,12 @@ export function FormBuilder({ fields, style, config, onChange, onStyleChange, on
                 className="flex-1"
               />
               {style.logoUrl && (
-                <img
+                <Image
                   src={style.logoUrl}
                   alt="Form Logo Preview"
                   className="w-8 h-8 object-contain"
+                  width={32}
+                  height={32}
                   onError={(e) => {
                     e.currentTarget.src = "";
                     onStyleChange({ ...style, logoUrl: "" });

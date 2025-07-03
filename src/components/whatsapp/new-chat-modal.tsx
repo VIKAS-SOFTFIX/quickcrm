@@ -4,6 +4,7 @@ import { useState } from "react";
 import { X, Search, Users, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WhatsAppContact } from "@/hooks/useWhatsApp";
+import Image from 'next/image';
 
 interface NewChatModalProps {
   isOpen: boolean;
@@ -137,10 +138,12 @@ export function NewChatModal({
                     >
                       <div className="relative">
                         <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden">
-                          <img 
+                          <Image 
                             src={contact.avatar} 
                             alt={contact.name}
                             className="w-full h-full object-cover"
+                            width={48}
+                            height={48}
                           />
                         </div>
                         {contact.isOnline && (
@@ -178,10 +181,12 @@ export function NewChatModal({
               <div className="space-y-4">
                 <div className="flex justify-center">
                   <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden">
-                    <img 
+                    <Image 
                       src={newContact.avatar} 
                       alt="Avatar"
                       className="w-full h-full object-cover"
+                      width={96}
+                      height={96}
                     />
                   </div>
                 </div>

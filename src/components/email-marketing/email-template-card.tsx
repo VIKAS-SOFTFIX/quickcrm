@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Edit, Trash2, Copy, Eye, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from 'next/image';
 
 export interface EmailTemplate {
   id: string;
@@ -64,7 +65,7 @@ export function EmailTemplateCard({
                 <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
               </div>
             )}
-            <img 
+            <Image 
               src={template.thumbnail} 
               alt={template.name}
               className={cn(
@@ -72,6 +73,9 @@ export function EmailTemplateCard({
                 imageLoaded ? "opacity-100" : "opacity-0"
               )}
               loading="lazy"
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              style={{ objectFit: 'cover' }}
               onLoad={handleImageLoad}
               onError={handleImageError}
             />
