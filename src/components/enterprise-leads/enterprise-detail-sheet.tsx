@@ -42,6 +42,23 @@ import { InvoiceModal } from "./invoice-modal";
 import { ContractModal } from "./contract-modal";
 import { OfferModal } from "./offer-modal";
 
+interface OfferData {
+  baseLicense: number;
+  perCompanyFee: number;
+  storagePrice: number;
+  aiQueryPrice: number;
+  discount: number;
+  validUntil: string;
+  gstType: "igst" | "sgst_cgst" | "none";
+  revisedRequirements: {
+    companies: number;
+    devices: string;
+    tenders: string;
+    aiQueries: number;
+    storageSpace: string;
+  };
+}
+
 interface EnterpriseLead {
   id: string;
   name: string;
@@ -270,7 +287,7 @@ export function EnterpriseDetailSheet({
     }, 1000);
   };
   
-  const handleSendOffer = (offerData: any) => {
+  const handleSendOffer = (offerData: OfferData) => {
     setActionMessage(`Offer created and sent to ${enterpriseLead?.email}`);
     setActionSuccess(true);
     setShowActionFeedback(true);

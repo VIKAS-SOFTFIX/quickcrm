@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import Image from "next/image";
 
 interface EmailDetailProps {
   email: Email | null;
@@ -257,9 +258,11 @@ export function EmailDetail({
                   >
                     <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center text-gray-500 flex-shrink-0">
                       {attachment.type.includes('image') ? (
-                        <img 
+                        <Image 
                           src={attachment.url} 
                           alt={attachment.name} 
+                          width={40}
+                          height={40}
                           className="w-full h-full object-cover rounded"
                         />
                       ) : (

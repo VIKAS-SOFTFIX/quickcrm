@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { X, Plus, Upload, Users, Search, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CampaignData } from "./campaign-wizard";
@@ -50,12 +50,12 @@ export function RecipientsStep({
     "West Bengal": ["Kolkata", "Howrah", "Durgapur", "Asansol", "Siliguri"]
   };
   
-  const msmeBatches: Record<string, string[]> = {
+  const msmeBatches = useMemo((): Record<string, string[]> => ({
     "Mumbai": ["Batch 1 - IT (150 leads)", "Batch 2 - Finance (120 leads)"],
     "Pune": ["Batch 1 - Education (100 leads)", "Batch 2 - IT (90 leads)"],
     "Bengaluru": ["Batch 1 - Tech Startups (200 leads)", "Batch 2 - IT Services (180 leads)"],
     "Chennai": ["Batch 1 - Manufacturing (160 leads)", "Batch 2 - IT (140 leads)"]
-  };
+  }), []);
   
   // State for MSME hierarchical selection
   const [msmeState, setMsmeState] = useState<string>("");
@@ -121,7 +121,7 @@ export function RecipientsStep({
   };
   
   // Handle MSME batch selection
-  const handleMsmeBatchSelect = (batch: string) => {
+  const handleMsmeBatchSelect = useCallback((batch: string) => {
     // Extract lead count from batch name
     const countMatch = batch.match(/\((\d+) leads\)/);
     const count = countMatch ? parseInt(countMatch[1]) : 0;
@@ -135,7 +135,7 @@ export function RecipientsStep({
       batch,
       count
     });
-  };
+  }, [recipients, msmeState, msmeProduct, msmeCategory, msmeDistrict, onRecipientsChange]);
   
   // Update MSME selection when hierarchical values change
   useEffect(() => {
@@ -156,7 +156,7 @@ export function RecipientsStep({
         });
       }
     }
-  }, [msmeDistrict]);
+  }, [msmeDistrict, recipients, msmeState, msmeProduct, msmeCategory, msmeBatches, onRecipientsChange, handleMsmeBatchSelect]);
   
   return (
     <div className="space-y-6">
